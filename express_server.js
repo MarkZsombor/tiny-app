@@ -19,7 +19,7 @@ function generateRandomString() {
   for (var i = 0; i < 6; i++)
     text.push(possible.charAt(Math.floor(Math.random() * possible.length)));
   text = text.join('');
-  console.log(text);
+  // console.log(text);
 
   return text;
 }
@@ -35,8 +35,13 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  let newShortURL = generateRandomString();
+  let longURL = 'http://' + req.body.longURL;
+  urlDatabase[newShortURL] = longURL;
+  // console.log(req.body.longURL);  // debug statement to see POST parameters
+  // console.log('long URL' + longURL);
+  res.send(newShortURL);         // Respond with 'Ok' (we will replace this)
+  // console.log(urlDatabase);
 });
 
 app.get("/", (req, res) => {
