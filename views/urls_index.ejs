@@ -10,8 +10,23 @@
 <body>
   <li>
   <% for(var url in urls) { %>
-    <ul><%= url + ': ' + urls[url] %></ul>
+    <ul>
+      <form method="POST" action="/urls/<%= url %>/delete">
+        <label><%= url + ': ' + urls[url] %></label>
+        <input type="submit" value="DELETE">
+      </form>
+    </ul>
   <% } %>
 </li>
+
+<!-- <form method="POST" action="/urls/9sm5xK/delete">...</form> -->
+
+
+<!--<form action="/urls" method="POST" style="margin:150px;">
+      <label for="longURL">Enter a URL:</label>
+      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
+      <input type="submit" value="Submit">
+    </form>
+ -->
 </body>
 </html>
