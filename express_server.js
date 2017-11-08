@@ -19,13 +19,12 @@ function generateRandomString() {
   for (var i = 0; i < 6; i++)
     text.push(possible.charAt(Math.floor(Math.random() * possible.length)));
   text = text.join('');
-  // console.log(text);
 
   return text;
+  // grabbed from online, works and I understand it though seems uneligant.
 }
 
 app.get("/u/:shortURL", (req, res) => {
-  // let templateVars = { urls: urlDatabase, shortURL: req.params.id };
   let longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
@@ -36,12 +35,12 @@ app.get("/urls/new", (req, res) => {
 
 app.post("/urls", (req, res) => {
   let newShortURL = generateRandomString();
+  //need to add check that generated value is actually unique
   let longURL = 'http://' + req.body.longURL;
+  // req.body gives an output of {longURL: www.url.com}
   urlDatabase[newShortURL] = longURL;
-  // console.log(req.body.longURL);  // debug statement to see POST parameters
-  // console.log('long URL' + longURL);
-  res.send(newShortURL);         // Respond with 'Ok' (we will replace this)
-  // console.log(urlDatabase);
+  res.send(newShortURL);
+  //Ugly, just lists the value but functional
 });
 
 app.get("/", (req, res) => {
