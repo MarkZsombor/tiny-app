@@ -24,6 +24,11 @@ function generateRandomString() {
   return text;
 }
 
+app.get("/u/:shortURL", (req, res) => {
+  // let templateVars = { urls: urlDatabase, shortURL: req.params.id };
+  let longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
