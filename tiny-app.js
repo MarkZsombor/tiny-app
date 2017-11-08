@@ -43,12 +43,17 @@ app.post("/urls", (req, res) => {
   //Ugly, just lists the value but functional
 });
 
-//new fucntion to alter
 app.post("/urls/:id/delete", (req, res) => {
   console.log(urlDatabase);
   delete urlDatabase[req.params.id];
   console.log(urlDatabase);
   res.redirect("/urls");
+});
+
+app.post("/urls/:id", (req, res) => {
+  let bullshitVariableName = 'http://' + req.body.longURL;
+  urlDatabase[req.params.id] = bullshitVariableName;
+  res.redirect(`/urls/${req.params.id}`);
 });
 
 app.get("/", (req, res) => {

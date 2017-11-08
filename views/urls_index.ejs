@@ -9,15 +9,14 @@
 
 <body>
   <li>
-  <% for(var url in urls) { %>
-    <ul>
+    <% for(var url in urls) { %>
       <form method="POST" action="/urls/<%= url %>/delete">
         <label><%= url + ': ' + urls[url] %></label>
+        <a href="/urls/<%= url %>">Edit</a>
         <input type="submit" value="DELETE">
       </form>
-    </ul>
-  <% } %>
-</li>
+    <% } %>
+  </li>
 
 <!-- <form method="POST" action="/urls/9sm5xK/delete">...</form> -->
 
