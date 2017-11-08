@@ -44,15 +44,15 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  console.log(urlDatabase);
+  // console.log(urlDatabase);
   delete urlDatabase[req.params.id];
-  console.log(urlDatabase);
+  // console.log(urlDatabase);
   res.redirect("/urls");
 });
 
 app.post("/urls/:id", (req, res) => {
-  let bullshitVariableName = 'http://' + req.body.longURL;
-  urlDatabase[req.params.id] = bullshitVariableName;
+  let longURL = 'http://' + req.body.longURL;
+  urlDatabase[req.params.id] = longURL;
   res.redirect(`/urls/${req.params.id}`);
 });
 
