@@ -49,19 +49,16 @@ function generateRandomString() {
 function findUserIdFromEmail(inputEmail) {
   for (let entry in users) {
     if (users[entry].email === inputEmail) {
-      console.log('Valid Email');
       return entry;
     }
   }
-  return "Invalid Email";
+  return false;
 }
 
 function validatePassword(userID, inputPassword) {
   return (users[userID].password === inputPassword)
 }
 
-// console.log(validatePassword('Mark', 'Bob'));
-// console.log(validatePassword('Mark', 'Booob'));
 
 
 // Browser Requests
@@ -138,7 +135,7 @@ app.post("/login", (req, res) => {
 
   userID = findUserIdFromEmail(inputEmail);
 
-  if (userID === "Invalid Email") {
+  if (!userID) {
     res.status(403);
     res.send("Invalid Email");
   } else {
@@ -183,7 +180,6 @@ app.post("/register", (req, res) => {
       email: req.body.email,
       password: req.body.password
     }
-    console.log(users[userId]);
     res.cookie('user_id', userId);
     res.redirect("/urls");
     }
