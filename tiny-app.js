@@ -89,6 +89,11 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars);
 });
 
+app.get("/login", (req, res) => {
+  let templateVars = { urls: urlDatabase, username: users[req.cookies["username"]] };
+  res.render("urls_login", templateVars);
+});
+
 app.post("/urls", (req, res) => {
   let newShortURL = generateRandomString();
   //need to add check that generated value is actually unique
