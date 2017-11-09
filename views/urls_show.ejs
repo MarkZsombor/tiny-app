@@ -9,13 +9,18 @@
 
 <body>
 
-<p><%= 'The link ' + urls[shortURL].long + ' has been shortened to ' + shortURL %>
+<p><%= 'The link ' + urls[shortURL].long + ' has been shortened to ' + shortURL %></p>
+
+
+<% if(user_id === urls[shortURL].userID) { %>
+
     <form action="/urls/<%= shortURL %>" method="POST">
       <label for="longURL">Update the URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
       <input type="submit" value="Update">
     </form>
-</p>
+
+<% } %>
 
 
 </body>
