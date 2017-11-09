@@ -112,7 +112,9 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase, user_id: users[req.cookies["user_id"]] };
+  let updatedDatabase = {};
+  updatedDatabase = urlsForUser(req.cookies["user_id"]);
+  let templateVars = { urls: updatedDatabase, user_id: users[req.cookies["user_id"]] };
   res.render("urls_index", templateVars);
 });
 
@@ -191,6 +193,7 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+  //Need to go back over this and see if there is a better way to solve it using helper functions
   let errors = false;
 
   if(!req.body.email || !req.body.password) {
