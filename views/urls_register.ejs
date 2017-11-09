@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp Register</title>
+</head>
+<header>
+    <% include ../partials/_header.ejs %>
+</header>
+
+<body>
+
+  <form action="/register" method="POST">
+    <input id="email" type="email" name="email" placeholder="type your email here" style="width: 300px">
+    <input id="password" type="password" name="password" placeholder="type your password here" style="width: 300px">
+
+    <input type="submit" value="Submit">
+  </form>
+
+</body>
+</html>
