@@ -46,7 +46,22 @@ function generateRandomString() {
   // grabbed from online, works and I understand it though seems uneligant.
 }
 
+function findUserIdFromEmail(inputEmail) {
+  for (let entry in users) {
+    if (users[entry].email === inputEmail) {
+      console.log('Valid Email');
+      return entry;
+    }
+  }
+  return "Invalid Email";
+}
 
+function validatePassword(userID, inputPassword) {
+  return (users[userID].password === inputPassword)
+}
+
+// console.log(validatePassword('Mark', 'Bob'));
+// console.log(validatePassword('Mark', 'Booob'));
 
 
 // Browser Requests
@@ -57,7 +72,7 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    username: users[req.cookies["username"]],
+    user_id: users[req.cookies["user_id"]],
   };
   res.render("urls_new", templateVars);
 });
@@ -71,12 +86,12 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase, username: users[req.cookies["username"]] };
+  let templateVars = { urls: urlDatabase, user_id: users[req.cookies["user_id"]] };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { urls: urlDatabase, shortURL: req.params.id, username: users[req.cookies["username"]] };
+  let templateVars = { urls: urlDatabase, shortURL: req.params.id, user_id: users[req.cookies["user_id"]] };
   res.render("urls_show", templateVars);
 });
 
@@ -85,12 +100,12 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  let templateVars = { urls: urlDatabase, username: users[req.cookies["username"]] };
+  let templateVars = { urls: urlDatabase, user_id: users[req.cookies["user_id"]] };
   res.render("urls_register", templateVars);
 });
 
 app.get("/login", (req, res) => {
-  let templateVars = { urls: urlDatabase, username: users[req.cookies["username"]] };
+  let templateVars = { urls: urlDatabase, user_id: users[req.cookies["user_id"]] };
   res.render("urls_login", templateVars);
 });
 
@@ -116,13 +131,31 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  let username = req.body.username;
-  res.cookie('username', username);
-  res.redirect("/urls");
+  let inputEmail = req.body.email;
+  let inputPassword = req.body.password;
+  let userID = "";
+  //check if email exists
+
+  userID = findUserIdFromEmail(inputEmail);
+
+  if (userID === "Invalid Email") {
+    res.status(403);
+    res.send("Invalid Email");
+  } else {
+    //check if password is valid
+    if(validatePassword(userID, inputPassword)){
+      res.cookie('user_id', userID);
+      res.redirect("/urls");
+    } else {
+      res.status(403);
+      res.send("Invalid password");
+    }
+  }
+
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect("/urls");
 });
 
@@ -151,7 +184,7 @@ app.post("/register", (req, res) => {
       password: req.body.password
     }
     console.log(users[userId]);
-    res.cookie('username', userId);
+    res.cookie('user_id', userId);
     res.redirect("/urls");
     }
 });
