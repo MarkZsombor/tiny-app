@@ -10,8 +10,16 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    short: "b2xVn2",
+    long: "http://www.lighthouselabs.ca",
+    userID: "Mark"
+  },
+  "9sm5xK": {
+    short: "9sm5xK",
+    long: "http://www.google.com",
+    userID: "Mark"
+  }
 };
 
 const users = {
@@ -115,7 +123,12 @@ app.post("/urls", (req, res) => {
   //need to add check that generated value is actually unique
   let longURL = 'http://' + req.body.longURL;
   // req.body gives an output of {longURL: www.url.com}
-  urlDatabase[newShortURL] = longURL;
+  urlDatabase[newShortURL] = {
+    short: newShortURL,
+    long: longURL,
+    userID: req.cookies["user_id"]
+  }
+  console.log(urlDatabase[newShortURL]);
   res.send(newShortURL);
   //Ugly, just lists the value but functional
 });
