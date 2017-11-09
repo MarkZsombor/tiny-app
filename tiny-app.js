@@ -9,6 +9,8 @@ app.set("view engine", "ejs")
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
+//Datasets
+
 const urlDatabase = {
   "b2xVn2": {
     short: "b2xVn2",
@@ -18,7 +20,7 @@ const urlDatabase = {
   "9sm5xK": {
     short: "9sm5xK",
     long: "http://www.google.com",
-    userID: "Mark"
+    userID: "Bob"
   }
 };
 
@@ -40,7 +42,7 @@ const users = {
   }
 }
 
-let username = "";
+// Functions
 
 function generateRandomString() {
   var text = [];
@@ -65,6 +67,21 @@ function findUserIdFromEmail(inputEmail) {
 
 function validatePassword(userID, inputPassword) {
   return (users[userID].password === inputPassword)
+}
+
+function urlsForUser(id) {
+  //take an id, search the urldatabase and returns a new object that only contains urls with the given id.
+  let updatedDatabase = {};
+  for (let i in urlDatabase) {
+    if (id === urlDatabase[i].userID){
+      updatedDatabase[i] = {
+        short: urlDatabase[i].short,
+        long: urlDatabase[i].long,
+        userID: urlDatabase[i].userID
+      }
+    }
+  }
+  return updatedDatabase;
 }
 
 
@@ -202,6 +219,8 @@ app.post("/register", (req, res) => {
     }
 });
 
+
+// Listen
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
