@@ -122,15 +122,33 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  let userId = generateRandomString();
-  users[userId] = {
-    id: userId,
-    email: req.body.email,
-    password: req.body.password
+  let errors = false;
+
+  if(!req.body.email || !req.body.password) {
+    errors = true;
+    res.status(400);
+    res.send('Empty input box');
   }
-  console.log(users[userId]);
-  res.cookie('username', userId);
-  res.redirect("/urls");
+
+  for (let entry in users) {
+    if (users[entry].email === req.body.email) {
+      errors = true;
+      res.status(400);
+      res.send('Email already in use');
+    }
+  }
+
+  if(!errors) {
+    let userId = generateRandomString();
+    users[userId] = {
+      id: userId,
+      email: req.body.email,
+      password: req.body.password
+    }
+    console.log(users[userId]);
+    res.cookie('username', userId);
+    res.redirect("/urls");
+    }
 });
 
 app.listen(PORT, () => {
