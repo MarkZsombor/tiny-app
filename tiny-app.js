@@ -28,6 +28,10 @@ function generateRandomString() {
   // grabbed from online, works and I understand it though seems uneligant.
 }
 
+
+
+
+// Browser Requests
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
@@ -38,6 +42,28 @@ app.get("/urls/new", (req, res) => {
     username: req.cookies["username"],
   };
   res.render("urls_new", templateVars);
+});
+
+app.get("/", (req, res) => {
+  res.end("Hello!");
+});
+
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
+});
+
+app.get("/urls", (req, res) => {
+  let templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  res.render("urls_index", templateVars);
+});
+
+app.get("/urls/:id", (req, res) => {
+  let templateVars = { urls: urlDatabase, shortURL: req.params.id, username: req.cookies["username"] };
+  res.render("urls_show", templateVars);
+});
+
+app.get("/hello", (req, res) => {
+  res.end("<html><body>Hello <b>World</b></body></html>\n");
 });
 
 app.post("/urls", (req, res) => {
@@ -71,31 +97,6 @@ app.post("/logout", (req, res) => {
   res.clearCookie('username');
   res.redirect("/urls");
 });
-
-
-app.get("/", (req, res) => {
-  res.end("Hello!");
-});
-
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
-
-app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase, username: req.cookies["username"] };
-  res.render("urls_index", templateVars);
-});
-
-app.get("/urls/:id", (req, res) => {
-  let templateVars = { urls: urlDatabase, shortURL: req.params.id, username: req.cookies["username"] };
-  res.render("urls_show", templateVars);
-});
-
-app.get("/hello", (req, res) => {
-  res.end("<html><body>Hello <b>World</b></body></html>\n");
-});
-
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
