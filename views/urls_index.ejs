@@ -9,12 +9,18 @@
 
 <body>
   <li>
+
     <% for(var url in urls) { %>
-      <form method="POST" action="/urls/<%= url %>/delete">
-        <label><%= url + ': ' + urls[url] %></label>
-        <a href="/urls/<%= url %>">Edit</a>
-        <input type="submit" value="DELETE">
-      </form>
+      <p><%= url + ': ' + urls[url].long %></p>
+      <a href="/urls/<%= url %>">Edit</a>
+
+      <% if(user_id.id === urls[url].userID) { %>
+
+        <form method="POST" action="/urls/<%= url %>/delete">
+          <input type="submit" value="DELETE">
+        </form>
+      <% } %>
+
     <% } %>
   </li>
 
