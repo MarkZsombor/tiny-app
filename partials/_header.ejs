@@ -4,16 +4,13 @@
 
 <% if(user_id === undefined) { %>
 
-  <p>You are not currently logged it</p>
-  <a href="/register">Register</a>
-  <a href="/login">Login</a>
-
+  <p>You are not currently logged in. Please <a href="/login">Login</a> or <a href="/register">Register</a>.</p>
 
 <% } else { %>
 
-<h3>You are logged in with <%= user_id.email %>
+<p>You are logged in with <%= user_id.email %></p>
 
-</h3>
+
   <form action="/logout" method="POST">
     <input type="submit" value="Logout">
   </form>
