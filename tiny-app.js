@@ -220,14 +220,24 @@ app.post("/urls", (req, res) => {
     long: longURL,
     userID: req.session.user_id
   }
-  console.log(urlDatabase[newShortURL]);
+  // console.log(urlDatabase[newShortURL]);
   res.send(newShortURL);
   //Ugly, just lists the value but functional
 });
 
 app.post("/urls/:id/delete", (req, res) => {
+  if (!req.session.user_id) {
+    res.redirect("/login");
+    return;
+  } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
+    res.status(403);
+    res.send("This URL doesnt belong to you");
+    return;
+  }
+
   delete urlDatabase[req.params.id];
   res.redirect("/urls");
+
 });
 
 app.post("/urls/:id", (req, res) => {
