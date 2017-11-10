@@ -107,10 +107,26 @@ function findEmail(id) {
 // console.log(findEmail(req.session.user_id));
 // console.log(findEmail("Dog"));
 
+
+function doesTinyExist(cruchedCode) {
+  for (let i in urlDatabase) {
+    if (cruchedCode === urlDatabase[i].short) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
 // Browser Requests
-app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
-  res.redirect(longURL);
+app.get("/u/:id", (req, res) => {
+  if (!doesTinyExist(req.params.id)){
+    res.status(403);
+    res.send("This Tiny URL does not exist");
+  } else {
+    let longURL = urlDatabase[req.params.id].long;
+    res.redirect(longURL);
+  }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -149,19 +165,24 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = {
-    urls: urlDatabase,
-    shortURL: req.params.id,
-    user_id: users[req.session.user_id],
-    // email: users[req.session.user_id].email
-  };
-  if (!req.session.user_id) {
-    res.redirect("/login");
-  } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
-      res.status(403);
-      res.send("This URL doesnt belong to you");
+  if (!doesTinyExist(req.params.id)){
+    res.status(403);
+    res.send("This Tiny URL does not exist");
   } else {
-    res.render("urls_show", templateVars);
+    let templateVars = {
+      urls: urlDatabase,
+      shortURL: req.params.id,
+      user_id: users[req.session.user_id],
+      // email: users[req.session.user_id].email
+    };
+    if (!req.session.user_id) {
+      res.redirect("/login");
+    } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
+        res.status(403);
+        res.send("This URL doesnt belong to you");
+    } else {
+      res.render("urls_show", templateVars);
+    }
   }
 });
 
@@ -186,7 +207,7 @@ app.get("/login", (req, res) => {
 app.post("/urls", (req, res) => {
   let newShortURL = generateRandomString();
   //need to add check that generated value is actually unique
-  let longURL = 'http://' + req.body.longURL;
+  let longURL = req.body.longURL;
   // req.body gives an output of {longURL: www.url.com}
   urlDatabase[newShortURL] = {
     short: newShortURL,

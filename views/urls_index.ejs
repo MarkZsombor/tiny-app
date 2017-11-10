@@ -11,7 +11,7 @@
   <ul>
 
     <% for(var url in urls) { %>
-      <p><%= url + ': ' + urls[url].long %></p>
+      <p><%= 'http://localhost:8080/u/' + url + ': ' + urls[url].long %></p>
       <a href="/urls/<%= url %>">Edit</a>
 
       <% if(user_id.id === urls[url].userID) { %>
