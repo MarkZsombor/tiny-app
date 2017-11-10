@@ -248,6 +248,15 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
+  if (!req.session.user_id) {
+    res.redirect("/login");
+    return;
+  } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
+    res.status(403);
+    res.send("This URL doesnt belong to you");
+    return;
+  }
+
   let longURL = req.body.longURL;
   urlDatabase[req.params.id] = longURL;
   res.redirect(`/urls/${req.params.id}`);
@@ -304,7 +313,7 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 15)
   }
-  req.session.user_id = userID;
+  req.session.user_id = userId;
   res.redirect("/urls");
 });
 

@@ -3,20 +3,19 @@
 <head>
     <% include ../partials/_head.ejs %>
 </head>
+
 <header>
     <% include ../partials/_header.ejs %>
 </header>
 
 <body>
-  <ul>
-
+  <ul class="ele_inline">
     <% for(var url in urls) { %>
-      <%= 'http://localhost:8080/u/' + url + ' will redirect to ' + urls[url].long %>
-      <a href="/urls/<%= url %>">Edit</a>
+      <p class="ele_inline"><%= 'http://localhost:8080/u/' + url + ' will redirect to ' + urls[url].long %><a href="/urls/<%= url %>">Edit</a></p>
 
       <% if(user_id.id === urls[url].userID) { %>
 
-        <form method="POST" action="/urls/<%= url %>/delete">
+        <form class="ele_inline" method="POST" action="/urls/<%= url %>/delete">
           <input type="submit" value="DELETE">
         </form>
       <% } %>
@@ -27,18 +26,9 @@
 
   <% if(user_id) { %>
 
-    <a href="/urls/new">Make a new tiny link!</a>
+    <p><a href="/urls/new">Make a new tiny link!</a></p>
 
   <% } %>
 
-<!-- <form method="POST" action="/urls/9sm5xK/delete">...</form> -->
-
-
-<!--<form action="/urls" method="POST" style="margin:150px;">
-      <label for="longURL">Enter a URL:</label>
-      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
-      <input type="submit" value="Submit">
-    </form>
- -->
 </body>
 </html>
