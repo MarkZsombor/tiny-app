@@ -120,7 +120,14 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { urls: urlDatabase, shortURL: req.params.id, user_id: users[req.cookies["user_id"]] };
-  res.render("urls_show", templateVars);
+  if (!req.cookies["user_id"]) {
+    res.redirect("/login");
+  } else if (req.cookies["user_id"] !== urlDatabase[req.params.id].userID) {
+      res.status(403);
+      res.send("This URL doesnt belong to you");
+  } else {
+    res.render("urls_show", templateVars);
+  }
 });
 
 app.get("/hello", (req, res) => {

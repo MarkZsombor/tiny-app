@@ -12,7 +12,7 @@
 <p><%= 'The link ' + urls[shortURL].long + ' has been shortened to ' + shortURL %></p>
 
 
-<% if(user_id === urls[shortURL].userID) { %>
+<% if(urls[shortURL].userID === user_id.id) { %>
 
     <form action="/urls/<%= shortURL %>" method="POST">
       <label for="longURL">Update the URL:</label>
@@ -22,6 +22,11 @@
 
 <% } %>
 
+<!-- <% if(!user_id) { %>
 
+  <p>You are not the creator of this link. You will be unable to modify it.</p>
+
+<% } %>
+ -->
 </body>
 </html>
