@@ -225,7 +225,7 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
-  let longURL = 'http://' + req.body.longURL;
+  let longURL = req.body.longURL;
   urlDatabase[req.params.id] = longURL;
   res.redirect(`/urls/${req.params.id}`);
 });
