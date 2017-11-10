@@ -134,7 +134,6 @@ app.get("/u/:id", (req, res) => {
 app.get("/urls/new", (req, res) => {
   let templateVars = {
     user_id: users[req.session.user_id],
-    // email: users[req.session.user_id].email
   };
   if (req.session.user_id){
     res.render("urls_new", templateVars);
@@ -165,7 +164,6 @@ app.get("/urls", (req, res) => {
   let templateVars = {
     urls: updatedDatabase,
     user_id: users[req.session.user_id],
-    // email: users[req.session.user_id].email
      };
   res.render("urls_index", templateVars);
 });
@@ -179,8 +177,7 @@ app.get("/urls/:id", (req, res) => {
       urls: urlDatabase,
       shortURL: req.params.id,
       user_id: users[req.session.user_id],
-      // email: users[req.session.user_id].email
-    };
+          };
     if (!req.session.user_id) {
       res.redirect("/login");
     } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
@@ -201,8 +198,7 @@ app.get("/register", (req, res) => {
   let templateVars = {
     urls: urlDatabase,
     user_id: users[req.session.user_id],
-    // email: users[req.session.user_id].email
-  };
+      };
   res.render("urls_register", templateVars);
 });
 
@@ -215,8 +211,7 @@ app.get("/login", (req, res) => {
   let templateVars = {
     urls: urlDatabase,
     user_id: users[req.session.user_id],
-    // email: users[req.session.user_id].email
-  };
+      };
   res.render("urls_login", templateVars);
 });
 
@@ -286,7 +281,6 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  //Need to go back over this and see if there is a better way to solve it using helper functions
 
   if(!req.body.email || !req.body.password) {
     res.status(400);
