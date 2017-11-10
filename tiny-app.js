@@ -119,16 +119,50 @@ function doesTinyExist(cruchedCode) {
 
 
 // Browser Requests
-app.get("/u/:id", (req, res) => {
-  if (!doesTinyExist(req.params.id)){
-    res.status(403);
-    res.send("This Tiny URL does not exist");
+app.get("/", (req, res) => {
+  if (!req.session.user_id) {
+    res.redirect("/login");
     return;
   }
 
-  let longURL = urlDatabase[req.params.id].long;
-  res.redirect(longURL);
+  res.redirect("/urls");
 
+});
+
+app.get("/login", (req, res) => {
+  if (req.session.user_id) {
+    res.redirect("/urls");
+    return;
+  }
+
+  let templateVars = {
+    urls: urlDatabase,
+    user_id: users[req.session.user_id],
+      };
+  res.render("urls_login", templateVars);
+});
+
+app.get("/register", (req, res) => {
+  if (req.session.user_id) {
+    res.redirect("/urls");
+    return;
+  }
+
+  let templateVars = {
+    urls: urlDatabase,
+    user_id: users[req.session.user_id],
+      };
+  res.render("urls_register", templateVars);
+});
+
+app.get("/urls", (req, res) => {
+  let updatedDatabase = {};
+  updatedDatabase = urlsForUser(req.session.user_id);
+  let templateVars = {
+    urls: updatedDatabase,
+    user_id: users[req.session.user_id],
+     };
+  res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
@@ -144,28 +178,8 @@ app.get("/urls/new", (req, res) => {
 
 });
 
-app.get("/", (req, res) => {
-  if (!req.session.user_id) {
-    res.redirect("/login");
-    return;
-  }
-
-  res.redirect("/urls");
-
-});
-
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
-});
-
-app.get("/urls", (req, res) => {
-  let updatedDatabase = {};
-  updatedDatabase = urlsForUser(req.session.user_id);
-  let templateVars = {
-    urls: updatedDatabase,
-    user_id: users[req.session.user_id],
-     };
-  res.render("urls_index", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -189,31 +203,18 @@ app.get("/urls/:id", (req, res) => {
   }
 });
 
-app.get("/register", (req, res) => {
-  if (req.session.user_id) {
-    res.redirect("/urls");
+app.get("/u/:id", (req, res) => {
+  if (!doesTinyExist(req.params.id)){
+    res.status(403);
+    res.send("This Tiny URL does not exist");
     return;
   }
 
-  let templateVars = {
-    urls: urlDatabase,
-    user_id: users[req.session.user_id],
-      };
-  res.render("urls_register", templateVars);
+  let longURL = urlDatabase[req.params.id].long;
+  res.redirect(longURL);
+
 });
 
-app.get("/login", (req, res) => {
-  if (req.session.user_id) {
-    res.redirect("/urls");
-    return;
-  }
-
-  let templateVars = {
-    urls: urlDatabase,
-    user_id: users[req.session.user_id],
-      };
-  res.render("urls_login", templateVars);
-});
 
 app.post("/urls", (req, res) => {
   let newShortURL = generateRandomString();
