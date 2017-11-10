@@ -193,6 +193,11 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
+  if (req.session.user_id) {
+    res.redirect("/urls");
+    return;
+  }
+
   let templateVars = {
     urls: urlDatabase,
     user_id: users[req.session.user_id],
