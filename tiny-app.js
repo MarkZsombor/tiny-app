@@ -123,10 +123,12 @@ app.get("/u/:id", (req, res) => {
   if (!doesTinyExist(req.params.id)){
     res.status(403);
     res.send("This Tiny URL does not exist");
-  } else {
-    let longURL = urlDatabase[req.params.id].long;
-    res.redirect(longURL);
+    return;
   }
+
+  let longURL = urlDatabase[req.params.id].long;
+  res.redirect(longURL);
+
 });
 
 app.get("/urls/new", (req, res) => {
@@ -136,17 +138,21 @@ app.get("/urls/new", (req, res) => {
   };
   if (req.session.user_id){
     res.render("urls_new", templateVars);
-  } else {
-      res.redirect("/login");
+    return;
   }
+
+  res.redirect("/login");
+
 });
 
 app.get("/", (req, res) => {
   if (!req.session.user_id) {
     res.redirect("/login");
-  } else {
-    res.redirect("/urls");
+    return;
   }
+
+  res.redirect("/urls");
+
 });
 
 app.get("/urls.json", (req, res) => {
@@ -261,32 +267,29 @@ app.post("/logout", (req, res) => {
 
 app.post("/register", (req, res) => {
   //Need to go back over this and see if there is a better way to solve it using helper functions
-  let errors = false;
 
   if(!req.body.email || !req.body.password) {
-    errors = true;
     res.status(400);
     res.send('Empty input box');
+    return;
   }
 
   for (let entry in users) {
     if (users[entry].email === req.body.email) {
-      errors = true;
       res.status(400);
       res.send('Email already in use');
+      return;
     }
   }
 
-  if(!errors) {
-    let userId = generateRandomString();
-    users[userId] = {
-      id: userId,
-      email: req.body.email,
-      password: bcrypt.hashSync(req.body.password, 15)
-    }
-    req.session.user_id = userID;
-    res.redirect("/urls");
-    }
+  let userId = generateRandomString();
+  users[userId] = {
+    id: userId,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 15)
+  }
+  req.session.user_id = userID;
+  res.redirect("/urls");
 });
 
 
