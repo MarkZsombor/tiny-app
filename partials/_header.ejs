@@ -2,16 +2,20 @@
 <h2>Fear my app dev abilities</h2>
 
 
-<% if(user_id) { %>
-  <h3>You are logged in</h3>
-  <form action="/logout" method="POST">
-    <input type="submit" value="Logout">
-  </form>
-<% } else { %>
+<% if(user_id === undefined) { %>
 
   <p>You are not currently logged it</p>
   <a href="/register">Register</a>
   <a href="/login">Login</a>
 
+
+<% } else { %>
+
+<h3>You are logged in with
+
+</h3>
+  <form action="/logout" method="POST">
+    <input type="submit" value="Logout">
+  </form>
 
 <% }  %>

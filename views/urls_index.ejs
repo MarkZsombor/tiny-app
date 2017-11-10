@@ -8,7 +8,7 @@
 </header>
 
 <body>
-  <li>
+  <ul>
 
     <% for(var url in urls) { %>
       <p><%= url + ': ' + urls[url].long %></p>
@@ -22,7 +22,14 @@
       <% } %>
 
     <% } %>
-  </li>
+
+  </ul>
+
+  <% if(user_id) { %>
+
+    <a href="/urls/new">Make a new tiny link!</a>
+
+  <% } %>
 
 <!-- <form method="POST" action="/urls/9sm5xK/delete">...</form> -->
 

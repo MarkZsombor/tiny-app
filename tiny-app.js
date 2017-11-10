@@ -92,7 +92,20 @@ function urlsForUser(id) {
   return updatedDatabase;
 }
 
+function findEmail(id) {
+  if (id === undefined) {
+    return "";
+  } else if(users[id]) {
+      return users[id].email;
+  } else {
+    return "";
 
+  }
+}
+
+// console.log(findEmail("Mark"));
+// console.log(findEmail(req.session.user_id));
+// console.log(findEmail("Dog"));
 
 // Browser Requests
 app.get("/u/:shortURL", (req, res) => {
@@ -103,6 +116,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/urls/new", (req, res) => {
   let templateVars = {
     user_id: users[req.session.user_id],
+    // email: users[req.session.user_id].email
   };
   if (req.session.user_id){
     res.render("urls_new", templateVars);
@@ -112,7 +126,11 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.end("Hello!");
+  if (!req.session.user_id) {
+    res.redirect("/login");
+  } else {
+    res.redirect("/urls");
+  }
 });
 
 app.get("/urls.json", (req, res) => {
@@ -122,12 +140,21 @@ app.get("/urls.json", (req, res) => {
 app.get("/urls", (req, res) => {
   let updatedDatabase = {};
   updatedDatabase = urlsForUser(req.session.user_id);
-  let templateVars = { urls: updatedDatabase, user_id: users[req.session.user_id] };
+  let templateVars = {
+    urls: updatedDatabase,
+    user_id: users[req.session.user_id],
+    // email: users[req.session.user_id].email
+     };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { urls: urlDatabase, shortURL: req.params.id, user_id: users[req.session.user_id] };
+  let templateVars = {
+    urls: urlDatabase,
+    shortURL: req.params.id,
+    user_id: users[req.session.user_id],
+    // email: users[req.session.user_id].email
+  };
   if (!req.session.user_id) {
     res.redirect("/login");
   } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
@@ -138,17 +165,21 @@ app.get("/urls/:id", (req, res) => {
   }
 });
 
-app.get("/hello", (req, res) => {
-  res.end("<html><body>Hello <b>World</b></body></html>\n");
-});
-
 app.get("/register", (req, res) => {
-  let templateVars = { urls: urlDatabase, user_id: users[req.session.user_id] };
+  let templateVars = {
+    urls: urlDatabase,
+    user_id: users[req.session.user_id],
+    // email: users[req.session.user_id].email
+  };
   res.render("urls_register", templateVars);
 });
 
 app.get("/login", (req, res) => {
-  let templateVars = { urls: urlDatabase, user_id: users[req.session.user_id] };
+  let templateVars = {
+    urls: urlDatabase,
+    user_id: users[req.session.user_id],
+    // email: users[req.session.user_id].email
+  };
   res.render("urls_login", templateVars);
 });
 
