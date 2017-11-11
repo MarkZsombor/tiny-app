@@ -10,6 +10,7 @@ app.use(cookieSession({
 }))
 
 app.set("view engine", "ejs");
+
 app.use(express.static('assets'));
 
 const bodyParser = require("body-parser");
@@ -186,7 +187,7 @@ app.get("/urls.json", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   if (!doesTinyExist(req.params.id)){
     res.status(403);
-    res.send("This Tiny URL does not exist");
+    res.send('This Tiny URL does not exist, feel free to make on <a href="/urls/new">Here</a>');
   } else {
     let templateVars = {
       urls: urlDatabase,
@@ -207,7 +208,7 @@ app.get("/urls/:id", (req, res) => {
 app.get("/u/:id", (req, res) => {
   if (!doesTinyExist(req.params.id)){
     res.status(403);
-    res.send("This Tiny URL does not exist");
+    res.send('This Tiny URL does not exist, feel free to make on <a href="/urls/new">Here</a>');
     return;
   }
 

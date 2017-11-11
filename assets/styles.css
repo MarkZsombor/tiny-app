@@ -1,3 +1,7 @@
+header {
+  background-color: #B0C7BD;
+}
+
 body {
   font-family: 'Lato', 'sans-serif';
   font-size: 18px;
@@ -10,15 +14,16 @@ h1 {
   font-family: 'Vollkorn SC', serif;
 }
 
-h2, h3 {
+h2 {
   font-family: 'Open Sans Condensed', sans-serif;
 }
 
-h2 {
-  color: blue;
-}
 
 .ele_inline {
       display: inline
-      margin: 20px;
+/*      margin: 20px;
+*/}
+
+.new_url {
+  margin-top: 50px;
 }

@@ -11,7 +11,7 @@
 
 <body>
 
-<p><%= 'The link ' + urls[shortURL].long + ' has been shortened to http://localhost:8080/u/' + shortURL %></p>
+<p>The link <strong><%=  urls[shortURL].long %></strong> has been shortened to <strong><%= 'http://localhost:8080/u/' + shortURL %></strong></p>
 
 
 <% if(urls[shortURL].userID === user_id.id) { %>

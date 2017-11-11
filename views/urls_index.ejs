@@ -9,20 +9,20 @@
 </header>
 
 <body>
-  <ul class="ele_inline">
+
+    <h2>Your Tiny Links</h2>
     <% for(var url in urls) { %>
-      <p class="ele_inline"><%= 'http://localhost:8080/u/' + url + ' will redirect to ' + urls[url].long %><a href="/urls/<%= url %>">Edit</a></p>
+      <ol><strong><%= 'http://localhost:8080/u/' + url %></strong> will redirect to <strong><%= urls[url].long %></strong>     <a href="/urls/<%= url %>">Edit the Link</a>
 
       <% if(user_id.id === urls[url].userID) { %>
 
-        <form class="ele_inline" method="POST" action="/urls/<%= url %>/delete">
+        <form method="POST" action="/urls/<%= url %>/delete">
           <input type="submit" value="DELETE">
         </form>
-      <% } %>
+      <% } %></ol>
 
     <% } %>
 
-  </ul>
 
   <% if(user_id) { %>
 
