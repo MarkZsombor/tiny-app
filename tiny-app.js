@@ -18,6 +18,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 /* Datasets */
 
+// urlDatabase has 2 hard coded entries for debugging purposes. Should be removed before the app goes live
 const urlDatabase = {
   "b2xVn2": {
     short: "b2xVn2",
@@ -31,18 +32,18 @@ const urlDatabase = {
   }
 };
 
-//needed for debugging
-const markPassword = bcrypt.hashSync("Bob", 15);
+// testUser and password is needed for ease of debugging, needs to be removed before the app is goes live.
+const testPassword = bcrypt.hashSync("Bob", 15);
 
 const users = {
-  "Mark": {
-    id: "Mark",
+  "testUser": {
+    id: "testUser",
     email: "email@email.com",
-    password: markPassword
+    password: testPassword
   }
 }
 
-// Functions
+/* Functions */
 
 /*
  * Returns a random 6 character string.
@@ -62,10 +63,10 @@ function generateRandomString() {
 }
 
 /*
- * Returns user id matching given email.
+ * Returns user id matching a given email.
  *
  * @param {string} inputEmail - the email to test
- * @return {string} user id matching email in database, empty string of no match found.
+ * @return {string} user id matching email from database, empty string of no match found.
  */
 function findUserIdFromEmail(inputEmail) {
   for (let entry in users) {
@@ -90,7 +91,7 @@ function validatePassword(userID, inputPassword) {
 /*
  * Returns an object containing all the short urls created by the user
  *
- * @param {string} id - the user id to check the database for
+ * @param {string} id - the user id to check the urlsDatabase for
  * @return {object} all of the objects from the urlDatabase that the user has created
  */
 function urlsForUser(id) {
@@ -202,7 +203,7 @@ app.get("/urls/:id", (req, res) => {
       res.redirect("/login");
     } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
         res.status(403);
-        res.send("403 ERROR: This URL doesnt belong to you");
+        res.send('403 ERROR: This URL doesnt belong to you. See your <a href="/urls">TinyLinks<a href="/urls/new">Here</a></a>');
     } else {
       res.render("urls_show", templateVars);
     }
@@ -225,12 +226,16 @@ app.post("/urls", (req, res) => {
   let newShortURL = generateRandomString();
   // TODO should add check that generated value is actually unique, unlikely but possible
   let longURL = req.body.longURL;
+  if (!longURL) {
+    res.status(403);
+    res.send('403 ERROR: You did not enter a URL. <a href="/urls/new"> Try again</a>')
+  }
   urlDatabase[newShortURL] = {
     short: newShortURL,
     long: longURL,
     userID: req.session.user_id
   }
-  res.send("New Tiny Link is http://localhost:8080/u/" + newShortURL);
+  res.send("New Tiny Link is http://localhost:8080/u/" + newShortURL + ' <a href="/urls"> See all your TinyLinks</a>');
 });
 
 app.post("/urls/:id/delete", (req, res) => {
@@ -240,7 +245,7 @@ app.post("/urls/:id/delete", (req, res) => {
     return;
   } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
     res.status(403);
-    res.send("403 ERROR: This URL doesnt belong to you");
+    res.send('403 ERROR: This URL doesnt belong to you. <a href="/urls">See your TinyLinks here</a>');
     return;
   }
   delete urlDatabase[req.params.id];
@@ -254,7 +259,7 @@ app.post("/urls/:id", (req, res) => {
     return;
   } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
     res.status(403);
-    res.send("403 ERROR: This URL doesnt belong to you");
+    res.send('03 ERROR: This URL doesnt belong to you. <a href="/urls/new">See your TinyLinks here</a>');
     return;
   }
 
@@ -274,7 +279,7 @@ app.post("/login", (req, res) => {
   // if email isnt in database show 403 status
   if (!userID) {
     res.status(403);
-    res.send("403 ERROR: Invalid Email");
+    res.send('403 ERROR: Invalid Email. <a href="/login">Try Again</a>');
   } else {
     //check if password is valid, show 403 status if its not
     if(validatePassword(userID, inputPassword)){
@@ -282,7 +287,7 @@ app.post("/login", (req, res) => {
       res.redirect("/urls");
     } else {
       res.status(403);
-      res.send("403 ERROR: Invalid password");
+      res.send('403 ERROR: Invalid password <a href="/login">Try Again</a>');
     }
   }
 
@@ -297,14 +302,14 @@ app.post("/register", (req, res) => {
   // if either input is empty, show a 400 status
   if(!req.body.email || !req.body.password) {
     res.status(400);
-    res.send('Empty input box');
+    res.send('Missing email or password. <a href="/register">Try Again</a>');
     return;
   }
   // if email is already registered, show a 400 status
   for (let entry in users) {
     if (users[entry].email === req.body.email) {
       res.status(400);
-      res.send('Email already in use');
+      res.send('Email already in use. <a href="/register">Try Again</a>');
       return;
     }
   }
