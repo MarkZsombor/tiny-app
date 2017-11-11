@@ -165,6 +165,12 @@ app.get("/register", (req, res) => {
 
 app.get("/urls", (req, res) => {
   // create a new object, fill with url data for the user from urlDatabase
+  if (!req.session.user_id){
+    res.status(401);
+    res.send('You are not logged in. <a href="/login">Please Login Here</a>');
+    return;
+  }
+
   let updatedDatabase = {};
   updatedDatabase = urlsForUser(req.session.user_id);
   let templateVars = {
@@ -180,7 +186,8 @@ app.get("/urls/new", (req, res) => {
   };
   // if not logged in redirect to login page
   if (!req.session.user_id){
-    res.redirect("/login");
+    res.status(401);
+    res.send('You are not logged in. <a href="/login">Please Login Here</a>');
     return;
   }
 
@@ -199,8 +206,10 @@ app.get("/urls/:id", (req, res) => {
       user_id: users[req.session.user_id],
     };
     // if not logged in redirect to login page, if page does not belong to user show error msg
-    if (!req.session.user_id) {
-      res.redirect("/login");
+    if (!req.session.user_id){
+      res.status(401);
+      res.send('You are not logged in. <a href="/login">Please Login Here</a>');
+      return;
     } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
         res.status(403);
         res.send('403 ERROR: This URL doesnt belong to you. See your <a href="/urls">TinyLinks<a href="/urls/new">Here</a></a>');
@@ -223,6 +232,12 @@ app.get("/u/:id", (req, res) => {
 
 
 app.post("/urls", (req, res) => {
+  if (!req.session.user_id){
+    res.status(401);
+    res.send('You are not logged in. <a href="/login">Please Login Here</a>');
+    return;
+  }
+
   let newShortURL = generateRandomString();
   // TODO should add check that generated value is actually unique, unlikely but possible
   let longURL = req.body.longURL;
@@ -240,8 +255,9 @@ app.post("/urls", (req, res) => {
 
 app.post("/urls/:id/delete", (req, res) => {
   // if not logged in redirects to login page, if tiny link doesn't belong to user show 403 status error
-  if (!req.session.user_id) {
-    res.redirect("/login");
+  if (!req.session.user_id){
+    res.status(401);
+    res.send('You are not logged in. <a href="/login">Please Login Here</a>');
     return;
   } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
     res.status(403);
@@ -254,8 +270,9 @@ app.post("/urls/:id/delete", (req, res) => {
 
 app.post("/urls/:id", (req, res) => {
   // if user not logged in redirect to login page, if tiny url does not belong to user show 403 status
-  if (!req.session.user_id) {
-    res.redirect("/login");
+  if (!req.session.user_id){
+    res.status(401);
+    res.send('You are not logged in. <a href="/login">Please Login Here</a>');
     return;
   } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
     res.status(403);
