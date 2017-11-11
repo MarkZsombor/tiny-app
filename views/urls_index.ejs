@@ -11,8 +11,8 @@
 <body>
 
   <h2>Your Tiny Links</h2>
-  <% for(var url in urls) { %>
-    <ol><strong><%= 'http://localhost:8080/u/' + url %></strong> will redirect to <strong><%= urls[url].long %></strong>     <a href="/urls/<%= url %>">Edit the Link</a>
+  <ol><% for(var url in urls) { %>
+    <li><strong><%= 'http://localhost:8080/u/' + url %></strong> will redirect to <strong><%= urls[url].long %></strong>     <a href="/urls/<%= url %>">Edit the Link</a>
 
     <% if(user_id.id === urls[url].userID) { %>
 
@@ -20,9 +20,9 @@
         <input type="submit" value="DELETE">
       </form>
 
-    <% } %></ol>
+    <% } %></li>
 
-  <% } %>
+  <% } %></ol>
 
   <% if(user_id) { %>
 
