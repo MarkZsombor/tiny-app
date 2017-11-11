@@ -4,8 +4,9 @@ MyTinyApp is a full stack web application built with Node and Express that allow
 
 ## Final Product
 
-![&quot;screenshot description&quot;](#)
-![&quot;screenshot description&quot;](#)
+!["Screenshot of the urls page"](https://github.com/MarkZsombor/tiny-app/blob/master/docs/urls_page.png)
+!["Screenshot of the Login page"](https://github.com/MarkZsombor/tiny-app/blob/master/docs/login_page.png)
+!["Screenshot for a tiny url page"](https://github.com/MarkZsombor/tiny-app/blob/master/docs/url_id_page.png)
 
 ## Dependencies
 
