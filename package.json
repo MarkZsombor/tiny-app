@@ -1,7 +1,7 @@
 {
   "name": "(tiny-app)",
   "version": "1.0.0",
-  "description": "",
+  "description": "An app that creates shortened URL links",
   "main": "express_server.js",
   "dependencies": {
     "bcrypt": "^1.0.3",
@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/MarkZsombor/tiny-app.git"
   },
-  "author": "",
+  "author": "Mark Zsombor",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/MarkZsombor/tiny-app/issues"
