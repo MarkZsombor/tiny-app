@@ -21,3 +21,9 @@ MyTinyApp is a full stack web application built with Node and Express that allow
 
 - Install all dependencies (using the `npm install` command).
 - Run the development web server using the `node tiny-app.js` command.
+
+## Features and Functionality
+
+After registering an account, users can create short urls that will be associated with their account. These urls can be shared anywhere.
+
+Client-side session management (implemented using cookie-sessions) makes the application stateful without compromising security. Bcrypt is used for password encryption to ensure the protection of user information.
