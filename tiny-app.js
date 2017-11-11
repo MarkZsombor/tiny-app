@@ -16,7 +16,7 @@ app.use(express.static('assets'));
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-//Datasets
+/* Datasets */
 
 const urlDatabase = {
   "b2xVn2": {
@@ -31,7 +31,7 @@ const urlDatabase = {
   }
 };
 
-
+//needed for debugging
 const markPassword = bcrypt.hashSync("Bob", 15);
 
 const users = {
@@ -39,21 +39,17 @@ const users = {
     id: "Mark",
     email: "email@email.com",
     password: markPassword
-  },
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur"
-  },
- "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
   }
 }
 
 // Functions
 
+/*
+ * Returns a random 6 character string.
+ * Used for new links and user ids
+ *
+ * @return {string}
+ */
 function generateRandomString() {
   var text = [];
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -63,22 +59,40 @@ function generateRandomString() {
   text = text.join('');
 
   return text;
-  // grabbed from online, works and I understand it though seems uneligant.
 }
 
+/*
+ * Returns user id matching given email.
+ *
+ * @param {string} inputEmail - the email to test
+ * @return {string} user id matching email in database, empty string of no match found.
+ */
 function findUserIdFromEmail(inputEmail) {
   for (let entry in users) {
     if (users[entry].email === inputEmail) {
       return entry;
     }
   }
-  return false;
+  return "";
 }
 
+/*
+ * Checks if a given password matches for the user id
+ *
+ * @param {string} userID - user id to check password for
+ * @param {string} inputPassword - password to be checked
+ * @return {boolean} whether the password matches the user id
+ */
 function validatePassword(userID, inputPassword) {
   return bcrypt.compareSync(inputPassword, users[userID].password);
 }
 
+/*
+ * Returns an object containing all the short urls created by the user
+ *
+ * @param {string} id - the user id to check the database for
+ * @return {object} all of the objects from the urlDatabase that the user has created
+ */
 function urlsForUser(id) {
   //take an id, search the urldatabase and returns a new object that only contains urls with the given id.
   let updatedDatabase = {};
@@ -94,22 +108,12 @@ function urlsForUser(id) {
   return updatedDatabase;
 }
 
-function findEmail(id) {
-  if (id === undefined) {
-    return "";
-  } else if(users[id]) {
-      return users[id].email;
-  } else {
-    return "";
-
-  }
-}
-
-// console.log(findEmail("Mark"));
-// console.log(findEmail(req.session.user_id));
-// console.log(findEmail("Dog"));
-
-
+/*
+ * Checks if a given short url already exists in the database
+ *
+ * @param {string} crunchedCode - tiny url to check
+ * @return {Boolean} whether the tiny url already exists or not
+ */
 function doesTinyExist(cruchedCode) {
   for (let i in urlDatabase) {
     if (cruchedCode === urlDatabase[i].short) {
@@ -120,18 +124,18 @@ function doesTinyExist(cruchedCode) {
 }
 
 
-// Browser Requests
+/* Browser Requests */
 app.get("/", (req, res) => {
+  // check if logged in, redirect to login screen if not
   if (!req.session.user_id) {
     res.redirect("/login");
     return;
   }
-
   res.redirect("/urls");
-
 });
 
 app.get("/login", (req, res) => {
+  // if already logged in redirect to urls page
   if (req.session.user_id) {
     res.redirect("/urls");
     return;
@@ -145,6 +149,7 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
+  // if already logged in redirect to urls page
   if (req.session.user_id) {
     res.redirect("/urls");
     return;
@@ -153,17 +158,18 @@ app.get("/register", (req, res) => {
   let templateVars = {
     urls: urlDatabase,
     user_id: users[req.session.user_id],
-      };
+  };
   res.render("urls_register", templateVars);
 });
 
 app.get("/urls", (req, res) => {
+  // create a new object, fill with url data for the user from urlDatabase
   let updatedDatabase = {};
   updatedDatabase = urlsForUser(req.session.user_id);
   let templateVars = {
     urls: updatedDatabase,
     user_id: users[req.session.user_id],
-     };
+  };
   res.render("urls_index", templateVars);
 });
 
@@ -171,34 +177,32 @@ app.get("/urls/new", (req, res) => {
   let templateVars = {
     user_id: users[req.session.user_id],
   };
-  if (req.session.user_id){
-    res.render("urls_new", templateVars);
+  // if not logged in redirect to login page
+  if (!req.session.user_id){
+    res.redirect("/login");
     return;
   }
 
-  res.redirect("/login");
-
-});
-
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
+  // if id doesnt exist show 403 status error
   if (!doesTinyExist(req.params.id)){
     res.status(403);
-    res.send('This Tiny URL does not exist, feel free to make on <a href="/urls/new">Here</a>');
+    res.send('403 ERROR: This Tiny URL does not exist, feel free to make one <a href="/urls/new">Here</a>');
   } else {
     let templateVars = {
       urls: urlDatabase,
       shortURL: req.params.id,
       user_id: users[req.session.user_id],
-          };
+    };
+    // if not logged in redirect to login page, if page does not belong to user show error msg
     if (!req.session.user_id) {
       res.redirect("/login");
     } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
         res.status(403);
-        res.send("This URL doesnt belong to you");
+        res.send("403 ERROR: This URL doesnt belong to you");
     } else {
       res.render("urls_show", templateVars);
     }
@@ -206,55 +210,51 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/u/:id", (req, res) => {
+  // if short url does not exist show 403 status error
   if (!doesTinyExist(req.params.id)){
     res.status(403);
-    res.send('This Tiny URL does not exist, feel free to make on <a href="/urls/new">Here</a>');
+    res.send('403 ERROR: This Tiny URL does not exist, feel free to make on <a href="/urls/new">Here</a>');
     return;
   }
-
   let longURL = urlDatabase[req.params.id].long;
   res.redirect(longURL);
-
 });
 
 
 app.post("/urls", (req, res) => {
   let newShortURL = generateRandomString();
-  //need to add check that generated value is actually unique
+  // TODO should add check that generated value is actually unique, unlikely but possible
   let longURL = req.body.longURL;
-  // req.body gives an output of {longURL: www.url.com}
   urlDatabase[newShortURL] = {
     short: newShortURL,
     long: longURL,
     userID: req.session.user_id
   }
-  // console.log(urlDatabase[newShortURL]);
-  res.send(newShortURL);
-  //Ugly, just lists the value but functional
+  res.send("New Tiny Link is http://localhost:8080/u/" + newShortURL);
 });
 
 app.post("/urls/:id/delete", (req, res) => {
+  // if not logged in redirects to login page, if tiny link doesn't belong to user show 403 status error
   if (!req.session.user_id) {
     res.redirect("/login");
     return;
   } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
     res.status(403);
-    res.send("This URL doesnt belong to you");
+    res.send("403 ERROR: This URL doesnt belong to you");
     return;
   }
-
   delete urlDatabase[req.params.id];
   res.redirect("/urls");
-
 });
 
 app.post("/urls/:id", (req, res) => {
+  // if user not logged in redirect to login page, if tiny url does not belong to user show 403 status
   if (!req.session.user_id) {
     res.redirect("/login");
     return;
   } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
     res.status(403);
-    res.send("This URL doesnt belong to you");
+    res.send("403 ERROR: This URL doesnt belong to you");
     return;
   }
 
@@ -271,17 +271,18 @@ app.post("/login", (req, res) => {
 
   userID = findUserIdFromEmail(inputEmail);
 
+  // if email isnt in database show 403 status
   if (!userID) {
     res.status(403);
-    res.send("Invalid Email");
+    res.send("403 ERROR: Invalid Email");
   } else {
-    //check if password is valid
+    //check if password is valid, show 403 status if its not
     if(validatePassword(userID, inputPassword)){
       req.session.user_id = userID;
       res.redirect("/urls");
     } else {
       res.status(403);
-      res.send("Invalid password");
+      res.send("403 ERROR: Invalid password");
     }
   }
 
@@ -293,13 +294,13 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-
+  // if either input is empty, show a 400 status
   if(!req.body.email || !req.body.password) {
     res.status(400);
     res.send('Empty input box');
     return;
   }
-
+  // if email is already registered, show a 400 status
   for (let entry in users) {
     if (users[entry].email === req.body.email) {
       res.status(400);
