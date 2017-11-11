@@ -10,19 +10,19 @@
 
 <body>
 
-    <h2>Your Tiny Links</h2>
-    <% for(var url in urls) { %>
-      <ol><strong><%= 'http://localhost:8080/u/' + url %></strong> will redirect to <strong><%= urls[url].long %></strong>     <a href="/urls/<%= url %>">Edit the Link</a>
+  <h2>Your Tiny Links</h2>
+  <% for(var url in urls) { %>
+    <ol><strong><%= 'http://localhost:8080/u/' + url %></strong> will redirect to <strong><%= urls[url].long %></strong>     <a href="/urls/<%= url %>">Edit the Link</a>
 
-      <% if(user_id.id === urls[url].userID) { %>
+    <% if(user_id.id === urls[url].userID) { %>
 
-        <form method="POST" action="/urls/<%= url %>/delete">
-          <input type="submit" value="DELETE">
-        </form>
-      <% } %></ol>
+      <form method="POST" action="/urls/<%= url %>/delete">
+        <input type="submit" value="DELETE">
+      </form>
 
-    <% } %>
+    <% } %></ol>
 
+  <% } %>
 
   <% if(user_id) { %>
 

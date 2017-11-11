@@ -11,10 +11,9 @@
 
 <body>
 
-<p>The link <strong><%=  urls[shortURL].long %></strong> has been shortened to <strong><%= 'http://localhost:8080/u/' + shortURL %></strong></p>
+  <p>The link <strong><%=  urls[shortURL].long %></strong> has been shortened to <strong><%= 'http://localhost:8080/u/' + shortURL %></strong></p>
 
-
-<% if(urls[shortURL].userID === user_id.id) { %>
+  <% if(urls[shortURL].userID === user_id.id) { %>
 
     <form action="/urls/<%= shortURL %>" method="POST">
       <label for="longURL">Update the URL:</label>
@@ -22,13 +21,7 @@
       <input type="submit" value="Update">
     </form>
 
-<% } %>
+  <% } %>
 
-<!-- <% if(!user_id) { %>
-
-  <p>You are not the creator of this link. You will be unable to modify it.</p>
-
-<% } %>
- -->
 </body>
 </html>
