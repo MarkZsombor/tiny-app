@@ -218,7 +218,6 @@ app.get("/urls/:id", (req, res) => {
     shortURL: req.params.id,
     user_id: users[req.session.user_id],
   };
-  console.log(templateVars);
   res.render("urls_show", templateVars);
 });
 
@@ -230,6 +229,9 @@ app.get("/u/:id", (req, res) => {
     return;
   }
   let longURL = urlDatabase[req.params.id].long;
+    if (longURL.slice(0, 4) !== 'http') {
+    longURL = "https://" + longURL;
+  }
   res.redirect(longURL);
 });
 
@@ -248,21 +250,12 @@ app.post("/urls", (req, res) => {
     res.status(403);
     res.send('403 ERROR: You did not enter a URL. <a href="/urls/new"> Try again</a>')
   }
-  if (longURL.slice(0, 4) !== 'http') {
-    longURL = "http://" + longURL;
-  }
   urlDatabase[newShortURL] = {
     short: newShortURL,
     long: longURL,
     userID: req.session.user_id
   }
 
-  console.log(urlDatabase);
-
-  let newRedirect = "/urls/" + newShortURL;
-  console.log(newRedirect);
-  // res.send("New Tiny Link is http://localhost:8080/u/" + newShortURL + ' <a href="/urls"> See all your TinyLinks</a>');
-  // res.redirect("/urls");
   res.redirect(`/urls/${newShortURL}`);
 });
 
