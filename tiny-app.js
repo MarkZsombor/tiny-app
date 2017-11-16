@@ -245,12 +245,20 @@ app.post("/urls", (req, res) => {
     res.status(403);
     res.send('403 ERROR: You did not enter a URL. <a href="/urls/new"> Try again</a>')
   }
+  if (longURL.slice(0, 4) !== 'http') {
+    longURL = "http://" + longURL;
+    console.log('updated the url')
+  }
   urlDatabase[newShortURL] = {
     short: newShortURL,
     long: longURL,
     userID: req.session.user_id
   }
-  res.send("New Tiny Link is http://localhost:8080/u/" + newShortURL + ' <a href="/urls"> See all your TinyLinks</a>');
+  let newRedirect = "/urls/" + newShortURL;
+  console.log(newRedirect);
+  // res.send("New Tiny Link is http://localhost:8080/u/" + newShortURL + ' <a href="/urls"> See all your TinyLinks</a>');
+  res.redirect("/urls");
+  // res.redirect(`/urls/${newShortURL}`);
 });
 
 app.post("/urls/:id/delete", (req, res) => {
