@@ -52,10 +52,10 @@ const users = {
  * @return {string}
  */
 function generateRandomString() {
-  var text = [];
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let text = [];
+  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (var i = 0; i < 6; i++)
+  for (let i = 0; i < 6; i++)
     text.push(possible.charAt(Math.floor(Math.random() * possible.length)));
   text = text.join('');
 
@@ -247,13 +247,15 @@ app.post("/urls", (req, res) => {
   }
   if (longURL.slice(0, 4) !== 'http') {
     longURL = "http://" + longURL;
-    console.log('updated the url')
   }
   urlDatabase[newShortURL] = {
     short: newShortURL,
     long: longURL,
     userID: req.session.user_id
   }
+
+  console.log(urlDatabase);
+
   let newRedirect = "/urls/" + newShortURL;
   console.log(newRedirect);
   // res.send("New Tiny Link is http://localhost:8080/u/" + newShortURL + ' <a href="/urls"> See all your TinyLinks</a>');
