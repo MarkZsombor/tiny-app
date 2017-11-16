@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <% include ./partials/_head.ejs %>
+      <% include ../partials/_head.ejs %>
 </head>
 
 <header>
-    <% include ./partials/_header.ejs %>
+      <% include ../partials/_header.ejs %>
 </header>
 
 
 <body>
 
-  <p>The link <strong><%=  urls[shortURL].long %></strong> has been shortened to <strong><%= 'http://localhost:8080/u/' + shortURL %></strong></p>
+  <p>The link <strong><%= urls[shortURL].long %></strong> has been shortened to <strong><%= 'http://localhost:8080/u/' + shortURL %></strong></p>
 
   <% if(urls[shortURL].userID === user_id.id) { %>
-
     <form action="/urls/<%= shortURL %>" method="POST">
       <label for="longURL">Update the URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
       <input type="submit" value="Update">
     </form>
-
   <% } %>
 
 </body>

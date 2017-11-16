@@ -23,7 +23,7 @@ const urlDatabase = {
   "b2xVn2": {
     short: "b2xVn2",
     long: "http://www.lighthouselabs.ca",
-    userID: "Mark"
+    userID: "testUser"
   },
   "9sm5xK": {
     short: "9sm5xK",
@@ -199,24 +199,27 @@ app.get("/urls/:id", (req, res) => {
   if (!doesTinyExist(req.params.id)){
     res.status(403);
     res.send('403 ERROR: This Tiny URL does not exist, feel free to make one <a href="/urls/new">Here</a>');
-  } else {
-    let templateVars = {
-      urls: urlDatabase,
-      shortURL: req.params.id,
-      user_id: users[req.session.user_id],
-    };
-    // if not logged in redirect to login page, if page does not belong to user show error msg
-    if (!req.session.user_id){
-      res.status(401);
-      res.send('You are not logged in. <a href="/login">Please Login Here</a>');
-      return;
-    } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
-        res.status(403);
-        res.send('403 ERROR: This URL doesnt belong to you. See your <a href="/urls">TinyLinks<a href="/urls/new">Here</a></a>');
-    } else {
-      res.render("urls_show", templateVars);
-    }
+    return;
   }
+  // if not logged in redirect to login page
+  if (!req.session.user_id){
+    res.status(401);
+    res.send('You are not logged in. <a href="/login">Please Login Here</a>');
+    return;
+  }
+  // if page does not belong to user show error msg
+  if (req.session.user_id !== urlDatabase[req.params.id].userID) {
+    res.status(403);
+    res.send('403 ERROR: This URL doesnt belong to you. See your <a href="/urls">TinyLinks<a href="/urls/new">Here</a></a>');
+    return;
+  }
+  let templateVars = {
+    urls: urlDatabase,
+    shortURL: req.params.id,
+    user_id: users[req.session.user_id],
+  };
+  console.log(templateVars);
+  res.render("urls_show", templateVars);
 });
 
 app.get("/u/:id", (req, res) => {
@@ -259,8 +262,8 @@ app.post("/urls", (req, res) => {
   let newRedirect = "/urls/" + newShortURL;
   console.log(newRedirect);
   // res.send("New Tiny Link is http://localhost:8080/u/" + newShortURL + ' <a href="/urls"> See all your TinyLinks</a>');
-  res.redirect("/urls");
-  // res.redirect(`/urls/${newShortURL}`);
+  // res.redirect("/urls");
+  res.redirect(`/urls/${newShortURL}`);
 });
 
 app.post("/urls/:id/delete", (req, res) => {
@@ -284,14 +287,15 @@ app.post("/urls/:id", (req, res) => {
     res.status(401);
     res.send('You are not logged in. <a href="/login">Please Login Here</a>');
     return;
-  } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
+  }
+  if (req.session.user_id !== urlDatabase[req.params.id].userID) {
     res.status(403);
     res.send('03 ERROR: This URL doesnt belong to you. <a href="/urls/new">See your TinyLinks here</a>');
     return;
   }
 
   let longURL = req.body.longURL;
-  urlDatabase[req.params.id] = longURL;
+  urlDatabase[req.params.id].long = longURL;
   res.redirect(`/urls/${req.params.id}`);
 });
 
